@@ -1,0 +1,178 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Sale;
+use App\Models\Test;
+use App\Models\Product;
+use App\Models\Support;
+use App\Models\Combonation;
+use Illuminate\Http\Request;
+
+class TestController extends Controller
+{
+
+    public function index()
+    {
+        return view('dashboard.tests');
+    }
+
+    public function generate(){
+        set_time_limit(3600);
+        $min_sup = request()->min_supp;
+        $min_conf = request()->min_conf;
+        // generating a Test
+            $test = Test::create([
+                'min_supp' => $min_sup,
+                'min_confidence' => $min_conf
+            ]);
+        // END generating a Test
+
+        // generating support table for the test parameters and the products that we have
+            $productsData = Product::all();
+            $salesCount = Sale::distinct('invoiceNo')->get(['invoiceNo'])->count();
+            foreach($productsData as $product){
+
+                // عدد المناقلات يلي ظهر فيها المنتج
+                $ProductFrequency = Sale::where('product_name', $product->name)->count();
+
+                
+                $productSupport = number_format(($ProductFrequency / $salesCount) * 100, 2);
+                $supp = Support::create([
+                    'test_id'           => $test->id,
+                    'product_name'      => $product->name,
+                    'product_frequency' => $ProductFrequency,
+                    'support'           => $productSupport 
+                ]);
+                
+            }
+        // END generating support table
+
+        // generating combonations that meets the minimum support and conf
+            // products that satisfy minmium Support condition
+            $productsA = Support::where('test_id', $test->id)
+            ->where('support', '>=', $min_sup)
+            ->get();
+            // dd($productsA);
+            foreach($productsA as $productA){
+
+                $productsB = Support::where('test_id', $test->id)
+                ->where('support', '>=', $min_sup)
+                ->get();
+                // dd('product B' , $productsB);
+                foreach($productsB as $productB){
+
+                    // we already examend this combonations in the first loop
+                    $jumB = Combonation::where('product_a', $productB->product_name)->count();
+
+                    if($jumB > 0){
+
+                    }else{
+                        // we dont need combonations of the same item
+                        if($productA->product_name == $productB->product_name){}
+                        else{
+                            Combonation::create([
+                                'test_id' => $test->id,
+                                'product_a' => $productA->product_name,
+                                'product_b' => $productB->product_name,
+                                'combonation_frequency' => 0,
+                                'support' => 0,
+                            ]);
+                        }
+                    }
+                }
+            }
+        // END generating combonations
+
+        //getting all combonations we created for this test
+
+        $testCombonations = Combonation::where('test_id', $test->id)->get();
+            
+        foreach($testCombonations as $combo){
+            $product_a = $combo -> product_a;
+            $product_b = $combo -> product_b;
+
+            // total transactions count
+            $totalInvoices = Sale::distinct('invoiceNo')->get(['invoiceNo']);
+            
+            $combonation_frequency = 0;
+
+            foreach($totalInvoices as $invoice){
+                
+                $a_buffer = Sale::where('invoiceNo', $invoice->invoiceNo) -> where('product_name', $product_a) -> count();
+                $b_buffer = Sale::where('invoiceNo', $invoice->invoiceNo) -> where('product_name', $product_b) -> count();
+                
+                if($a_buffer == 1 && $b_buffer == 1){
+                    $combonation_frequency++;
+                }
+            }
+            $support = number_format(($combonation_frequency / $salesCount) * 100 , 2);
+            
+            $confidence = number_format( $support / Product::where('name' , $product_a)->first()->frequency , 2) ;
+
+            Combonation::where('test_id', $test->id) 
+            ->where('id', $combo->id)
+            ->update([
+                'combonation_frequency' => $combonation_frequency,
+                'confidence' => $confidence, 
+                'support' => $support
+            ]);
+        }
+
+        $combonations = Combonation::where('test_id' , 1)
+        ->where('support' , '>=' , 1)    // 1
+        ->where('confidence' , '>=' , 0.01) // 0.01
+        ->orderBy('confidence')
+        ->get();
+
+        return view('dashboard.results' , compact('combonations'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Test $test)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Test $test)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Test $test)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Test $test)
+    {
+        //
+    }
+}
