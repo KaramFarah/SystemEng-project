@@ -47,7 +47,7 @@ class TestController extends Controller
                 
             }
         // END generating support table
-        dd('we here');
+        // dd('we here');
         // generating combonations that meets the minimum support and conf
             // products that satisfy minmium Support condition
             $productsA = Support::where('test_id', $test->id)
