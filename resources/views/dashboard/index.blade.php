@@ -74,8 +74,7 @@
                     @foreach ($topSelling as $item)
                         <tr>
                             <td>{{$item->product_a}}</td>
-                            <td><a href="{{route('dashboard.single-product')}}" class="text-primary fw-bold">+ Add to Cart</a></td>
-              
+                            <td><a href="{{route('dashboard.single-product' , ['product' => $item])}}" class="text-primary fw-bold">+ Add to Cart</a></td>
                         </tr>
                     @endforeach
                   </tbody>

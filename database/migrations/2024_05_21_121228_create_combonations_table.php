@@ -19,6 +19,7 @@ return new class extends Migration
             $table -> integer('combonation_frequency')->default(0);
             $table -> float('support')->default(0);
             $table -> float('confidence')->default(0);
+            $table -> integer('active')->default(0);
             $table->timestamps();
         });
     }

@@ -47,7 +47,7 @@ class TestController extends Controller
                 
             }
         // END generating support table
-
+        dd('we here');
         // generating combonations that meets the minimum support and conf
             // products that satisfy minmium Support condition
             $productsA = Support::where('test_id', $test->id)
@@ -83,7 +83,7 @@ class TestController extends Controller
                 }
             }
         // END generating combonations
-
+        // dd('we here');
         //getting all combonations we created for this test
 
         $testCombonations = Combonation::where('test_id', $test->id)->get();
@@ -118,61 +118,19 @@ class TestController extends Controller
                 'support' => $support
             ]);
         }
+        
+
 
         $combonations = Combonation::where('test_id' , 1)
-        ->where('support' , '>=' , 1)    // 1
-        ->where('confidence' , '>=' , 0.01) // 0.01
+        ->where('support' , '>=' , $min_sup)    // 1
+        ->where('confidence' , '>=' , $min_conf) // 0.01
         ->orderBy('confidence')
         ->get();
-
+        foreach($combonations as $combo){
+            $combo->update([
+                'active' => 1,
+            ]);
+        }
         return view('dashboard.results' , compact('combonations'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Test $test)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Test $test)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Test $test)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Test $test)
-    {
-        //
     }
 }

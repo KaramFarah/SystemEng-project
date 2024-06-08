@@ -17,4 +17,8 @@ class DashboardController extends Controller
 
         return view('dashboard.index' , compact('salesCount' , 'products' , 'topSelling'));
     }
+    public function singleProduct(Product $product){
+        $sugestion = Combonation::where('active' , 1)->where('product_a' , $product->name)->get();
+        return view('dashboard.single-product' , compact('product' , 'sugestion'));
+    }
 }

@@ -27,8 +27,7 @@ Route::get('test' , function(){
 });
 // DashBoard
 Route::get('dashboard' , function(){return view('dashboard.pages-blank');})->name('dashboard.blank');
-Route::get('dashboard/single-product' , [DashboardController::class, 'singleProduct'])->name('dashboard.single-product');
-
+Route::get('dashboard/single-product/{product}' , [DashboardController::class, 'singleProduct'])->name('dashboard.single-product');
 
 // slaes import
 Route::get('sales', [SaleController::class, 'index'])->name('dashboard.sales');
