@@ -47,27 +47,23 @@ class TestController extends Controller
                 
             }
         // END generating support table
-        // dd('we here');
+
         // generating combonations that meets the minimum support and conf
             // products that satisfy minmium Support condition
             $productsA = Support::where('test_id', $test->id)
             ->where('support', '>=', $min_sup)
             ->get();
-            // dd($productsA);
             foreach($productsA as $productA){
 
                 $productsB = Support::where('test_id', $test->id)
                 ->where('support', '>=', $min_sup)
                 ->get();
-                // dd('product B' , $productsB);
                 foreach($productsB as $productB){
 
                     // we already examend this combonations in the first loop
                     $jumB = Combonation::where('product_a', $productB->product_name)->count();
 
-                    if($jumB > 0){
-
-                    }else{
+                    if($jumB > 0){}else{
                         // we dont need combonations of the same item
                         if($productA->product_name == $productB->product_name){}
                         else{
@@ -79,11 +75,9 @@ class TestController extends Controller
                                 'support' => 0,
                             ]);
                         }
-                    }
-                }
-            }
+                    }}}
         // END generating combonations
-        // dd('we here');
+
         //getting all combonations we created for this test
 
         $testCombonations = Combonation::where('test_id', $test->id)->get();
@@ -122,7 +116,6 @@ class TestController extends Controller
 
 
         $combonations = Combonation::where('test_id' , 1)
-        ->where('support' , '>=' , $min_sup)    // 1
         ->where('confidence' , '>=' , $min_conf) // 0.01
         ->orderBy('confidence')
         ->get();

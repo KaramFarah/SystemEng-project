@@ -28,6 +28,7 @@
 
 <br>
 <h3>Forgot Somthing?</h3>
+{{-- {{dd($sugestion)}} --}}
 @foreach ($sugestion as $item)
     <div class="col-3">
         <div class="card info-card revenue-card">
@@ -39,7 +40,7 @@
                 <i class="bi bi-minecart-loaded"></i>
                 </div>
                 <div class="ps-3">
-                <h6>{{$item->name}}</h6>
+                <h6>{{$item->secondProduct->name}}</h6>
                 </div>
                 <div class="ps-3">
                 <h6>+add to cart</h6>

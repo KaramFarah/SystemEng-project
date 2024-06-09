@@ -9,4 +9,11 @@ class Combonation extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+    public function getFirstProductAttribute(){
+        return Product::where('name' , $this->product_a)->first();
+    }
+    public function getSecondProductAttribute(){
+        return Product::where('name' , $this->product_b)->first();
+    }
 }

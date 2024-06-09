@@ -32,7 +32,7 @@
                     <th>Test</th>
                     <th>First Product</th>
                     <th>Second Product</th>
-                    <th>Support</th>
+                    {{-- <th>Support</th> --}}
                     <th>Confidence</th>
                 </tr>
                 @foreach($combonations as $item)
@@ -40,7 +40,7 @@
                     <td>{{ $item->test_id }}</td>
                     <td>{{ $item->product_a }}</td>
                     <td>{{ $item->product_b }}</td>
-                    <td>{{ $item->support . ' %' }} </td>
+                    {{-- <td>{{ $item->support . ' %' }} </td> --}}
                     <td>{{ $item->confidence . ' %' }} </td>
                 </tr>
                 @endforeach
